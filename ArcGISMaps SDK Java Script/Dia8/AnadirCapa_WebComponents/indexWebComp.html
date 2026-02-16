@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Core API</title>
-    <script type='module' src="./mainCoreAPI.js"></script>
+    <title>Web Components</title>
+    <script type='module' 
+    src="./mainWebComp.js"
+    defer></script>
 
     <!-- Load Calcite Design System -->
     <script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
@@ -22,17 +24,14 @@
             height: 100%;
             margin: 0;
         }
-        /* como hemos puesto un viewDiv, ocupe toda la pantalla */
-        #viewDiv{
-            height: 100%;
-        }
+       
     </style>
 
 </head>
 
 <body>
 
-    <div id="viewDiv"></div>
+    <arcgis-map basemap="topo-vector"></arcgis-map>
 
 </body>
 
