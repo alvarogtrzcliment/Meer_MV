@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base Map Toggle</title>
+
+<!-- Load Calcite Design System -->
+<script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
+
+<!-- Load the JavaScript Maps SDK core API -->
+<script src="https://js.arcgis.com/4.34/"></script>
+
+<!-- Load the JavaScript Maps SDK Map components or other component packages -->
+<script type="module" src="https://js.arcgis.com/4.34/map-components/"></script>
+
+<style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+</style>
+
+</head>
+<body>
+    
+<!-- para poner el mapa base metes basemap="" dentro de arcgis-map -->
+<arcgis-map basemap="topo-vector">
+<!-- documentación, map components, basemap toggle cambias parametros y copias el codigo -->
+ <!-- el show title, no hay que ponerle nada porque es boleano, si lo pones true, si no false -->
+ <arcgis-map item-id="45b3b2fb35e94ab09381d0caa0da5946">
+  <arcgis-basemap-toggle
+    slot="top-right"
+    next-basemap="satellite"
+    show-title
+  ></arcgis-basemap-toggle>
+</arcgis-map>
+</arcgis-map>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Component Layer List</title>
+
+    <!-- Load Calcite Design System -->
+    <script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
+
+    <!-- Load the JavaScript Maps SDK core API -->
+    <script src="https://js.arcgis.com/4.34/"></script>
+
+    <!-- Load the JavaScript Maps SDK Map components or other component packages -->
+    <script type="module" src="https://js.arcgis.com/4.34/map-components/"></script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <arcgis-scene item-id="6604dffad1c343c99338700729b48378" basemap="dark-gray-3d" 
+    camera-position="-3.7,40.42,1260"
+        camera-tilt="70" camera-heading="340">
+
+        <arcgis-expand slot="top-right">
+            <arcgis-layer-list></arcgis-layer-list>
+            <arcgis-line-of-sight></arcgis-line-of-sight>
+        </arcgis-expand>
+
+        <arcgis-sketch slot="bottom-right" 
+        creation-mode="continuous" layout="horizontal"></arcgis-sketch>
+
+    </arcgis-scene>
+
+
+
+</body>
+
+</html>
