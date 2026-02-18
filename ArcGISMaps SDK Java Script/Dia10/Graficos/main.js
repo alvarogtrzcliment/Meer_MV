@@ -56,5 +56,5 @@ capaGraficaGL.add(graficoPunto)
 const arcgisMap = document.querySelector('arcgis-map')
 
 arcgisMap.addEventListener('arcgisViewReadyChange',()=>{
-    arcgisMap.map.add(capaGraficaGL)
+    arcgisMap.map.add(capaGraficaGL )
 })
