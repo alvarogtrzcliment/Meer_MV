@@ -33,7 +33,7 @@ arcgisMap.addEventListener('arcgisViewReadyChange', (eventoViewReadyChange) => {
 
     const resultadoQuery = hospitalesFL.queryFeatures(peticionQuery)
     resultadoQuery.then((resultadoFeatureSet) => {
-        // .then con resultado sfeatures set es porque lo que viene de laquery es un feature set
+        // .then con resultados features set es porque lo que viene de laquery es un feature set
         const entidades = resultadoFeatureSet.features
 
         // PARA AÑADIR EL RESULTADO AL MAPA, hay que METERLE una SIMBOLOGÍA, el grafico ya esta creado, importa la simbologia solamente.
