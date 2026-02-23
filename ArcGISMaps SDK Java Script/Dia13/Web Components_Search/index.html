@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Components</title>
+
+  <!-- Load Calcite Design System -->
+  <script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
+
+  <!-- Load the JavaScript Maps SDK core API -->
+  <script src="https://js.arcgis.com/4.34/"></script>
+
+  <!-- Load the JavaScript Maps SDK Map components or other component packages -->
+  <script type="module" src="https://js.arcgis.com/4.34/map-components/"></script>
+
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+  </style>
+
+  <script type="module" src="./main.js" defer></script>
+
+</head>
+
+<body>
+
+  <arcgis-map basemap="topo-vector" center="-3.8, 40.45" zoom="11">
+    <!-- Esencialmente, buscamos en esri developer el web component que queremos y lo añadimos en el arcgismap -->
+    <arcgis-search slot="top-right" include-default-sources-disabled></arcgis-search>
+    <!-- este widget te deja dibujar -->
+    <arcgis-sketch slot="bottom-right" creation-mode="update"> </arcgis-sketch>
+  </arcgis-map>
+
+</body>
+
+</html>
