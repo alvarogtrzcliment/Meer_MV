@@ -1,4 +1,3 @@
-
 const FeatureLayer = await $arcgis.import('@arcgis/core/layers/FeatureLayer.js')
 
 const arcgisMap = document.querySelector('arcgis-map')

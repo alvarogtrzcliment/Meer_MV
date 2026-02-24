@@ -10,7 +10,7 @@ const hospitalesFL = new FeatureLayer({
 })
 
 const capaGraficaResultados = new GraphicsLayer()
-const capaGraficaHospitalesResultados = new GraphicsLayer
+const capaGraficaHospitalesResultados = new GraphicsLayer()
 
 const simbologiaPunto = new SimpleMarkerSymbol({
   angle: 0,
@@ -62,7 +62,7 @@ sketch.addEventListener('arcgisCreate', (customEvent) => {
         //        ESTO ES UNA PROMESA!!!!!
 
         resultadoQuery.then((resultadoFeatureSet) => {
-            const entidades = resultadoFeatureSet.resultadoFeatureSet
+            const entidades = resultadoFeatureSet.features
             const entidadesConSimbologia = entidades.map((hospital) => {
                     hospital.symbol = simbologiaPunto
                     return hospital
