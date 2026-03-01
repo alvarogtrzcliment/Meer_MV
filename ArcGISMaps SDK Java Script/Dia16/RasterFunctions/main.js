@@ -1,37 +1,43 @@
 const ImageryTileLayer = await $arcgis.import("@arcgis/core/layers/ImageryTileLayer.js");
-const { bandArithmeticNDVI, colormap } = await $arcgis.import("@arcgis/core/layers/support/rasterFunctionUtils.js"); const ImageryTileLayer = await $arcgis.import("@arcgis/core/layers/ImageryTileLayer.js");
+const rasterFunctionUtils = await $arcgis.import("@arcgis/core/layers/support/rasterFunctionUtils.js");
 
+const arcgisMap = document.querySelector('arcgis-map')
 
-
-const arcgisMap = document.querySelector('arcgis-map');
-
-
-// Create an NDVI raster function with output scaled to 0–255.
-const ndviRF = bandArithmeticNDVI{
-    
-    functionArguments: {
-        visibleBandIS: 3,
-        infraredBandID: 4,
-        scientificOutput: false, // True outputs values from -1 to 1.
-    }
-};
-// Apply a predefined color map to the NDVI raster function result.
-const rasterFunction = {
-    functionName: "Colormap",
-    functionArguments: {
-        colorRampName: "NDVI3",
-        raster: ndviRasterFunction
-    }
-};
-
-// Cargas la capa
+// 1. Natural Color Layer (RGB)
 const incendioNaturalColorITL = new ImageryTileLayer({
-    portalItem: {
-        id: "6f466c76fd2d4d9188ab20c62717b6ac"
-    },
-    rasterFunction: rasterFunction
+  portalItem: {
+    id: "6f466c76fd2d4d9188ab20c62717b6ac"
+  },
+  bandIds: [3, 2, 0],
+  effect: "brightness(5) contrast(200%)"
 });
-// Lo añades al mapa
+
+// 2. Define the NDVI Raster Function
+// Note: Bands are 0-indexed. For Landsat 8, NIR is 4, Red is 3.
+const ndviRF = rasterFunctionUtils.bandArithmeticNDVI({
+  nirBandId: 4,
+  redBandId: 3,
+  scientificOutput: false
+});
+
+// 3. Apply a Colormap to visualize the NDVI
+const colormapRF = rasterFunctionUtils.colormap({
+  colorRampName: "NDVI3",
+  raster: ndviRF
+});
+
+// 4. Create the NDVI Layer using the raster function
+const incendioNDVI = new ImageryTileLayer({
+  portalItem: {
+    id: "6f466c76fd2d4d9188ab20c62717b6ac"
+  },
+  rasterFunction: colormapRF,
+  title: "NDVI Vegetation Index",
+  opacity: 0.8
+});
+
+// 5. Add layers to the map
 arcgisMap.addEventListener('arcgisViewReadyChange', () => {
-    arcgisMap.map.add([incendioNaturalColorITL]);
+  // You must add Layers to the map, not RasterFunctions
+  arcgisMap.map.addMany([incendioNaturalColorITL, incendioNDVI]);
 });
