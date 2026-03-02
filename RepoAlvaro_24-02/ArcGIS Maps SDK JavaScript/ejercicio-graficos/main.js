@@ -1,42 +1,39 @@
-// === 1. IMPORTACIONES (Imports) ===
+// Hay que hacer GEOMETRIA y SIMBOLOGÍA y una CAPA GRÁFICA de 
+// un punto, polilínea y polígono --> METELAS TODAS EN UN MAPA
 
-// a. Geometrías (Definen la forma espacial y ubicación)
+// === 1. Imports ===
+
+// Geometrías
 const Point = await $arcgis.import('@arcgis/core/geometry/Point.js')
 const Polyline = await $arcgis.import('@arcgis/core/geometry/Polyline.js')
 
-// b. Simbologías (Definen los colores y el estilo visual)
-const SimpleMarkerSymbol = await $arcgis.import(
-  '@arcgis/core/symbols/SimpleMarkerSymbol.js' // Usado para representar puntos
-)
-const SimpleLineSymbol = await $arcgis.import(
-  '@arcgis/core/symbols/SimpleLineSymbol.js' // Usado para representar líneas
-)
+// Simbologías
+const SimpleMarkerSymbol = await $arcgis.import('@arcgis/core/symbols/SimpleMarkerSymbol.js') // Representa puntos
+const SimpleLineSymbol = await $arcgis.import('@arcgis/core/symbols/SimpleLineSymbol.js')  // Representa líneas
 
-// c. Gráficos Base y Capa Gráfica
+// Gráficos Base y Capa Gráfica
 const Graphic = await $arcgis.import('@arcgis/core/Graphic.js') // Estructura de "Geometría + Simbología"
-const GraphicsLayer = await $arcgis.import(
-  '@arcgis/core/layers/GraphicsLayer.js' // Capa que contendrá los Graphics creados
-)
+const GraphicsLayer = await $arcgis.import('@arcgis/core/layers/GraphicsLayer.js') // Capa que contendrá los Graphics creados
 
-// === 2. DECLARACIÓN DEL CÓDIGO ===
+// === CÓDIGO ===
 
 // A. Geometrías
-// Se crea una geometría de Punto puro estableciendo la Latitud y Longitud
+// Punto según la Latitud y Longitud
 const geometriaPunto = new Point({
   latitude: 41,
   longitude: -4
 })
 
-// Se crea una geometría de Polilínea aportando un array de nodos que forman su trayectoria
+// Polilínea con un array de nodos que forman su trayectoria
 const geometriaLinea = new Polyline({
   paths: [
     [41, -3], // Primer vértice de coordenada XY
-    [41, -2]  // Segundo vértice, donde finaliza la línea
+    [41, -2]  // Segundo final de la línea
   ]
 })
 
-// Opcionalmente podemos declarar geometrías usando el formato crudo autocast (directamente un objeto normal en JSON)
-// Aquí generamos un polígono con un anillo o frontera exterior de 3 puntos (x, y)
+// También podemos declarar geometrías con autocasting
+// Generamos un polígono con 3 puntos (x, y)
 const geometriaPoligono = {
   type: 'polygon', // Especificamos el tipo
   rings: [
@@ -47,7 +44,7 @@ const geometriaPoligono = {
 }
 
 // B. Simbologías
-// Estilo para el punto establecido arriba
+// Del punto
 const simbologiaPunto = new SimpleMarkerSymbol({
   angle: 0,
   color: [255, 255, 255, 0.25], // Transparencia aplicada al color blanco
@@ -66,7 +63,7 @@ const simbologiaPunto = new SimpleMarkerSymbol({
   yoffset: 0
 })
 
-// Estilo simple e intuitivo para la línea (Polilínea)
+// De la Polilínea
 const simbologiaLinea = new SimpleLineSymbol({
   cap: 'round',
   color: [0, 122, 194, 1], // Azul
@@ -76,7 +73,7 @@ const simbologiaLinea = new SimpleLineSymbol({
   width: 1
 })
 
-// Simbología vía objeto convencional (Autocast) para el Polígono
+// Vía (Autocast) Polígono
 const simbologiaPoligono = {
   type: 'simple-fill',
   color: [0, 122, 194, 1],
@@ -92,8 +89,7 @@ const simbologiaPoligono = {
 }
 
 // === 3. CREACIÓN DE LOS GRÁFICOS (Graphics) ===
-// A diferencia de lo anterior, el objeto "Graphic" ensambla y vincula
-// la 'geometría' que dijimos dónde pintar, con la 'symbology' para cómo pintarla.
+//Graphic une geometry, y  symbology
 
 const graficoPunto = new Graphic({
   geometry: geometriaPunto,
@@ -110,15 +106,15 @@ const graficoPoligono = new Graphic({
   symbol: simbologiaPoligono
 })
 
-// === 4. CREACIÓN DE LAS CAPAS DE DIBUJO (Graphics Layers) ===
-// Para mostrar gráficos en un mapa de ArcGIS, estos deben existir dentro de una GraphicsLayer.
+// === 4. CREACIÓN DE Graphics Layers ===
+// Para mostralos en el mapa, deben estar en una GraphicsLayer (varias formas de hacerlo:)
 
-// Instancia pasando los gráficos como parámetros en el constructor
+// 1. Instancia pasando los gráficos como parámetros en el constructor
 const capaPuntos = new GraphicsLayer({
   graphics: [graficoPunto]
 })
 
-// O instanciando vacío y agregando progresivamente usando el método '.add()'
+// 2. Instancia vacía y agregando progresivamente usando el método '.add()'
 const capaPolilinea = new GraphicsLayer()
 capaPolilinea.add(graficoLinea)
 
@@ -129,7 +125,6 @@ capaPoligono.add(graficoPoligono)
 const arcgisMap = document.querySelector('arcgis-map')
 
 arcgisMap.addEventListener('arcgisViewReadyChange', () => {
-  // Cuando el componente de webmap está renderizado y listo...
-  // Utilizamos addMany para agrupar las capas e inyectarlas visualmente de una sola pasada.
+  // Utilizamos addMany para agrupar las capas y meterlas de una
   arcgisMap.map.addMany([capaPoligono, capaPolilinea, capaPuntos])
 })

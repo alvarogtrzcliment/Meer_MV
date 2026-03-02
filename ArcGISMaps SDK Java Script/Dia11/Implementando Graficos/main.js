@@ -1,130 +1,130 @@
 // Hay que hacer GEOMETRIA y SIMBOLOGÍA y una CAPA GRÁFICA de 
 // un punto, polilínea y polígono --> METELAS TODAS EN UN MAPA
 
-// Imports
+// === 1. Imports ===
 
 // Geometrías
+const Point = await $arcgis.import('@arcgis/core/geometry/Point.js')
+const Polyline = await $arcgis.import('@arcgis/core/geometry/Polyline.js')
 
-const Point = await $arcgis.import("@arcgis/core/geometry/Point.js");
-const Polyline = await $arcgis.import("@arcgis/core/geometry/Polyline.js");
-// POLYGON no hace falta, estoy usando type{} AUTOCASTING
+// Simbologías
+const SimpleMarkerSymbol = await $arcgis.import('@arcgis/core/symbols/SimpleMarkerSymbol.js') // Representa puntos
+const SimpleLineSymbol = await $arcgis.import('@arcgis/core/symbols/SimpleLineSymbol.js')  // Representa líneas
 
-// Simbología
+// Gráficos Base y Capa Gráfica
+const Graphic = await $arcgis.import('@arcgis/core/Graphic.js') // Estructura de "Geometría + Simbología"
+const GraphicsLayer = await $arcgis.import('@arcgis/core/layers/GraphicsLayer.js') // Capa que contendrá los Graphics creados
 
-const SimpleMarkerSymbol = await $arcgis.import("@arcgis/core/symbols/SimpleMarkerSymbol.js");
-const SimpleLineSymbol = await $arcgis.import("@arcgis/core/symbols/SimpleLineSymbol.js");
-const SimpleFillSymbol = await $arcgis.import("@arcgis/core/symbols/SimpleFillSymbol.js");
+// === CÓDIGO ===
 
-// GRAPHIC y GRAPHIC LAYER
-
-const Graphic = await $arcgis.import("@arcgis/core/Graphic.js");
-const GraphicsLayer = await $arcgis.import("@arcgis/core/layers/GraphicsLayer.js");
-
-
-// CODIGO
-
-// Geometría Punto
-const miPunto = new Point({
+// A. Geometrías
+// Punto según la Latitud y Longitud
+const geometriaPunto = new Point({
   latitude: 41,
-  longitude: -4,
-
-})
-console.log('Geometría Punto', miPunto)
-
-// Simbología
-const simbologiaPunto = new SimpleMarkerSymbol({
-  angle: 0,
-  color: [194, 0, 0, 1],
-  outline: {
-    cap: "round",
-    color: [255, 255, 255, 1],
-    join: "round",
-    miterLimit: 1,
-    style: "solid",
-    width: 1
-  },
-  path: "undefined",
-  size: 12,
-  style: "circle",
-  xoffset: 0,
-  yoffset: 0
-});
-
-// LAS UNO para generar un GRÁFICO para crear la CAPA GRÁFICA
-
-const graficoPunto = new Graphic({
-  geometry: miPunto,
-  symbol: simbologiaPunto,
+  longitude: -4
 })
 
-const capaGraficaPunto = new GraphicsLayer()
-
-capaGraficaPunto.add(graficoPunto)
-
-console.log('CapaPunto', capaGraficaPunto)
-
-// Ahora lo mismo con la polilínea
-
-const miPolilinea = new Polyline({
-
-  paths: [[41, -3], [41, -2]]
+// Polilínea con un array de nodos que forman su trayectoria
+const geometriaLinea = new Polyline({
+  paths: [
+    [41, -3], // Primer vértice de coordenada XY
+    [41, -2]  // Segundo final de la línea
+  ]
 })
 
-// Simbología polilinea
-const simbologiaPolilinea = new SimpleLineSymbol({
-  cap: "round",
-  color: [194, 0, 0, 1],
-  join: "round",
-  miterLimit: 1,
-  style: "short-dash-dot-dot",
-  width: 2
-});
-
-const graficoPolilinea = new Graphic({
-  geometry: miPolilinea,
-  symbol: simbologiaPolilinea,
-})
-
-const capaGraficaPolilinea = new GraphicsLayer()
-
-capaGraficaPolilinea.add(graficoPolilinea)
-
-console.log('CapaPoloilinea', capaGraficaPolilinea)
-
-const miPoligono = {
-  type: 'polygon',
-  rings: [[42, -3], [42, -2], [41, -1]]
+// También podemos declarar geometrías con autocasting
+// Generamos un polígono con 3 puntos (x, y)
+const geometriaPoligono = {
+  type: 'polygon', // Especificamos el tipo
+  rings: [
+    [42, -3],
+    [42, -2],
+    [41, -1]
+  ]
 }
 
-const simbologiaPoligono = new SimpleFillSymbol({
-  // type: 'simple-fill', --> sería como se haría con autocasting
-  color: [138, 0, 0, 1],
+// B. Simbologías
+// Del punto
+const simbologiaPunto = new SimpleMarkerSymbol({
+  angle: 0,
+  color: [255, 255, 255, 0.25], // Transparencia aplicada al color blanco
   outline: {
-    cap: "round",
-    color: [0, 0, 0, 1],
-    join: "round",
+    cap: 'round',
+    color: [0, 122, 194, 1],
+    join: 'round',
     miterLimit: 1,
-    style: "long-dash-dot-dot",
+    style: 'solid',
     width: 1
   },
-  style: "solid"
-});
+  path: 'undefined',
+  size: 12,
+  style: 'circle',
+  xoffset: 0,
+  yoffset: 0
+})
+
+// De la Polilínea
+const simbologiaLinea = new SimpleLineSymbol({
+  cap: 'round',
+  color: [0, 122, 194, 1], // Azul
+  join: 'round',
+  miterLimit: 1,
+  style: 'solid',
+  width: 1
+})
+
+// Vía (Autocast) Polígono
+const simbologiaPoligono = {
+  type: 'simple-fill',
+  color: [0, 122, 194, 1],
+  outline: {
+    cap: 'round',
+    color: [0, 122, 194, 1],
+    join: 'round',
+    miterLimit: 1,
+    style: 'solid',
+    width: 1
+  },
+  style: 'solid'
+}
+
+// === 3. CREACIÓN DE LOS GRÁFICOS (Graphics) ===
+//Graphic une geometry, y  symbology
+
+const graficoPunto = new Graphic({
+  geometry: geometriaPunto,
+  symbol: simbologiaPunto
+})
+
+const graficoLinea = new Graphic({
+  geometry: geometriaLinea,
+  symbol: simbologiaLinea
+})
 
 const graficoPoligono = new Graphic({
-  geometry: miPoligono,
+  geometry: geometriaPoligono,
   symbol: simbologiaPoligono
 })
 
-const capagraficaPoligono = new GraphicsLayer
+// === 4. CREACIÓN DE Graphics Layers ===
+// Para mostralos en el mapa, deben estar en una GraphicsLayer (varias formas de hacerlo:)
 
-capagraficaPoligono.add(graficoPoligono)
+// 1. Instancia pasando los gráficos como parámetros en el constructor
+const capaPuntos = new GraphicsLayer({
+  graphics: [graficoPunto]
+})
 
-console.log('CapaPoligono', capagraficaPoligono)
+// 2. Instancia vacía y agregando progresivamente usando el método '.add()'
+const capaPolilinea = new GraphicsLayer()
+capaPolilinea.add(graficoLinea)
 
-// Añadimos las capas al mapa
+const capaPoligono = new GraphicsLayer()
+capaPoligono.add(graficoPoligono)
 
+// === 5. AÑADIR AL MAPA ===
 const arcgisMap = document.querySelector('arcgis-map')
 
-arcgisMap.addEventListener('arcgisViewReadyChange', () =>{
-  arcgisMap.map.addMany([capaGraficaPolilinea, capaGraficaPunto, capagraficaPoligono])
+arcgisMap.addEventListener('arcgisViewReadyChange', () => {
+  // Utilizamos addMany para agrupar las capas y meterlas de una
+  arcgisMap.map.addMany([capaPoligono, capaPolilinea, capaPuntos])
 })

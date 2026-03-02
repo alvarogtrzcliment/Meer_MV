@@ -1,29 +1,34 @@
-// Seleccionamos el web component que encapsula el mapa
+// Seleccionamos el mapa
 const arcgisMap = document.querySelector('arcgis-map')
 
-// Escuchamos a que el mapa termine de renderizarse en el navegador
-arcgisMap.addEventListener('arcgisViewReadyChange', () => {
+// Event listener a que se renderice
+arcgisMap.addEventListener('arcgisViewReadyChange', () => {   //( => {}) Es una función flecha, dentro de la que vamos a programar
   // 1. Extraer listado de Capas
-  // 'allLayers.items' devuelve un array o colección con todas las capas presentes en ese momento en el objeto Map
+  // 'allLayers.items' devuelve un array con todas las capas presentes en el mapa
   const capas = arcgisMap.map.allLayers.items
+  // capas es un array de capas
+
+  console.log(arcgisMap.map.allLayers.items[0].title)
+  // en la consola de la web miras en el contenido, AllLayers, items [3] hay 3 capas, lo abres, vas a cada capa 
+  // y en title está el título en layers no te cuenta el mapa base. Con el property path coges el 
+  // camino para meterlo aquí en VS
 
   console.log(arcgisMap.map) // Verificamos la estructura general del mapa en consola
 
-  // 2. Creación de la Interfaz UI vía DOM manual
-  // Creamos desde cero un contenedor <div> para listar el nombre de estas capas
+  // 2. Iteramos con for of. También se puede hacer con capas.map() o capas.forEach()
+  // Creamos un <div> para que el Iterador liste los nombres de las capas
   const div = document.createElement('div')
-  div.id = 'div-capas' // Asignamos un identicador único si quisiéramos darle estilo por CSS
+  div.id = 'div-capas' // Asignamos un id
 
-  // Recorremos la colección de capas una por una
+  // Recorremos las capas una por una
   for (let capa of capas) {
     const parrafo = document.createElement('p') // Creamos una nueva etiqueta de párrafo (<p>)
-    parrafo.innerText = capa.title // Rellenamos el texto con la propiedad 'title' (título) que tiene la capa en ArcGIS
-
-    // Inyectamos este párrafo dentro de nuestro contenedor 'div'
+    parrafo.innerText = capa.title // Ponemos el título de la capa en ArcGIS
+    // Lo metemos en el 'div'
     div.appendChild(parrafo)
   }
 
-  // 3. Montar la UI en pantalla
-  // Finalmente inyectamos todo nuestro 'div' contenedor dentro del cuerpo (body) de la página web
+  // 3. Montarlo en pantalla
+  // Finalmente inyectamos el 'div' en el cuerpo de la web
   document.body.appendChild(div)
 })

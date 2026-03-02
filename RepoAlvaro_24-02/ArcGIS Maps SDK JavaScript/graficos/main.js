@@ -10,8 +10,8 @@ const GraphicsLayer = await $arcgis.import(
 
 // === 2. AÑADIR PUNTOS AL MAPA ===
 
-// a. Creación de la Geometría
-// Definimos expresamente qué son los datos espaciales. En este caso un Punto estático en coordenadas de España.
+// a. Creación Geometría
+// Definimos el Punto en España.
 const geometriaPunto = new Point({
   latitude: 41.4,
   longitude: -4
@@ -19,38 +19,37 @@ const geometriaPunto = new Point({
 
 console.log('Geometría', geometriaPunto)
 
-// b. Simbología Visual
-// Creamos un estilo de tipo "Simple", pero podemos configurarlo profundamente
+// b. Simbología (en GitHub Symbol builder)
 const simbologiaPunto = new SimpleMarkerSymbol({
   angle: 0,
-  color: [15, 255, 143, 1], // Un color de relleno en formato RGBA (Verdimar)
+  color: [15, 255, 143, 1], // relleno RGBA (Verdimar)
   outline: {
     cap: 'round',
     color: [0, 122, 194, 1], // Borde azul 
     join: 'round',
     miterLimit: 1,
     style: 'solid',
-    width: 4 // Grosor del delineado del marcador (muy grueso)
+    width: 4 // Grosor del borde (muy grueso)
   },
   path: 'undefined',
   size: 12,
-  style: 'x', // Forma de Equis/cruz en vez de círculo estándar
+  style: 'x', // Forma de cruz 
   xoffset: 0,
   yoffset: 0
 })
 
-// c. Unificación en el Objeto 'Graphic'
-// Un Graphic es el vehículo indispensable para llevar nuestra información al mapa
+// c. Unes ambas con Graphic
 const graficoPunto = new Graphic({
-  geometry: geometriaPunto, // Su posición en la tierra
-  symbol: simbologiaPunto   // Su aspecto en el lienzo
+  geometry: geometriaPunto, // posición
+  symbol: simbologiaPunto   // aspecto
+  // ya estan la geometría y la simbología, ahora podemos usarlo
 })
 
 // === 3. CREACIÓN Y ASIGNACIÓN A LA CAPA ===
-// Los gráficos no pueden flotar solos ni ser tirados al web map directamente, pertenecen a Capas Gráficas
+// Los gráficos pertenecen a Capas Gráficas
 const capaGraficaGL = new GraphicsLayer()
 
-// Insertamos nuestro Graphic "construido y decorado" a la Capa de Gráficos
+// Insertamos nuestro Graphic en la Capa de Gráficos
 capaGraficaGL.add(graficoPunto)
 
 
@@ -58,6 +57,6 @@ capaGraficaGL.add(graficoPunto)
 const arcgisMap = document.querySelector('arcgis-map')
 
 arcgisMap.addEventListener('arcgisViewReadyChange', () => {
-  // Cargamos esta capa en nuestro mapa base final una vez listo todo
+  // Cargamos esta capa en mapa
   arcgisMap.map.add(capaGraficaGL)
 })

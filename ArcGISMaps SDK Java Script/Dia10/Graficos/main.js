@@ -7,54 +7,55 @@ const Graphic = await $arcgis.import("@arcgis/core/Graphic.js");
 // Layers "especiales" graphics en core API abajo
 const GraphicsLayer = await $arcgis.import("@arcgis/core/layers/GraphicsLayer.js");
 
-// añadir puntos al mapa
+// === 2. AÑADIR PUNTOS AL MAPA ===
 
-// #1 Crear la geometría (varias maneras de obtenerlas) map point, de la api, con codigo a lo bruto
-const geometriaPunto =  new Point({
-    latitude: -4,
-    longitude: 41.4
-}) 
-
-console.log('Geometría',geometriaPunto)
-
-// Simbología hecho en https://developers.arcgis.com/javascript/latest/visualization/symbols-color-ramps/symbol-builder/
-
-const simbologiaPunto = new SimpleMarkerSymbol({
-  angle: 0,
-  color: [241,133,255,1],
-  outline: {
-    cap: "round",
-    color: [92,3,181,1],
-    join: "round",
-    miterLimit: 1,
-    style: "solid",
-    width: 1
-  },
-  path: "undefined",
-  size: 12,
-  style: "triangle",
-  xoffset: 0,
-  yoffset: 0
-});
-
-// Tienes la geometría y Simbología, ahora las UNES
-
-const graficoPunto = new Graphic({
-    geometry:geometriaPunto,
-    symbol:simbologiaPunto,
-    // ya estan la geometría y la simbología, ahora podemos usarlo
+// a. Creación Geometría
+// Definimos el Punto en España.
+const geometriaPunto = new Point({
+  latitude: 41.4,
+  longitude: -4
 })
 
-// creo una capa grafica para los graficos que creo
+console.log('Geometría', geometriaPunto)
 
+// b. Simbología (en GitHub Symbol builder)
+const simbologiaPunto = new SimpleMarkerSymbol({
+  angle: 0,
+  color: [15, 255, 143, 1], // relleno RGBA (Verdimar)
+  outline: {
+    cap: 'round',
+    color: [0, 122, 194, 1], // Borde azul 
+    join: 'round',
+    miterLimit: 1,
+    style: 'solid',
+    width: 4 // Grosor del borde (muy grueso)
+  },
+  path: 'undefined',
+  size: 12,
+  style: 'x', // Forma de cruz 
+  xoffset: 0,
+  yoffset: 0
+})
+
+// c. Unes ambas con Graphic
+const graficoPunto = new Graphic({
+  geometry: geometriaPunto, // posición
+  symbol: simbologiaPunto   // aspecto
+      // ya estan la geometría y la simbología, ahora podemos usarlo
+})
+
+// === 3. CREACIÓN Y ASIGNACIÓN A LA CAPA ===
+// Los gráficos pertenecen a Capas Gráficas
 const capaGraficaGL = new GraphicsLayer()
 
+// Insertamos nuestro Graphic en la Capa de Gráficos
 capaGraficaGL.add(graficoPunto)
 
-// hay que añadir la capa grafica al mapa
 
+// === 4. ACCESO AL MAPA ===
 const arcgisMap = document.querySelector('arcgis-map')
 
-arcgisMap.addEventListener('arcgisViewReadyChange',()=>{
-    arcgisMap.map.add(capaGraficaGL )
+arcgisMap.addEventListener('arcgisViewReadyChange', () => {
+  // Cargamos esta capa en mapa
+  arcgisMap.map.add(capaGraficaGL)
 })

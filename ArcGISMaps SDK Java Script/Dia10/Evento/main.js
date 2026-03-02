@@ -1,31 +1,34 @@
-// llamamos al mapa
 const arcgisMap = document.querySelector('arcgis-map')
 
 arcgisMap.addEventListener('arcgisViewReadyChange', () => {
-    // vista en caja
-    const vistaMapa = arcgisMap.view
-    // evento que cuando clicko en la vista ocurre algo, un --eventoClick--
-    const eventoClickMapa = vistaMapa.on('click', (eventoClick) => {
-        // cojo las coordenadas del punto que clické, y las guardo en una cosntante
-        const geometriaPunto = eventoClick.mapPoint
-        console.log('Geometría', geometriaPunto)
-        // mueve el mapa a el punto que guardé antes (puede hacerloporque metí en la funcion que pueda ver geometrías)
-        const resultadoMovimiento = vistaMapa.goTo(geometriaPunto)
-        // pasa a ser una promesa porque la vista tarda en llegar al punto, y una vez llegue al punto, hará...
-        console.log(resultadoMovimiento)
+  // Guardamos la "vista" del mapa en una variable (const))
+  // View encargada de gestionar los eventos e interacción del usuario
+  const vistaMapa = arcgisMap.view
 
-        //El movimiento sale bien => THEN
-        resultadoMovimiento.then(() => {
-            // llamas a la vistaMapa. lo que quieres hacer, y es una .... así que lleva =
-            vistaMapa.zoom = 18
-            // así lo 
-        })
+  // 1. Escuchar Eventos del usuario sobre el Mapa
+  // !!! El método 'on' nos permite reaccionar a la interacción, en este caso 'click'
+  const eventoClickMapa = vistaMapa.on('click', (eventoClick) => {
 
-        // El movimiento sale mal => CATCH
-        resultadoMovimiento.catch(() => {
-console.log(error)
-        })
+    // Se guardan las coordenadas del evento Click.mapPoint)
+    const geometriaPunto = eventoClick.mapPoint
+    console.log('Geometria', geometriaPunto)
+
+    // 2. Movimiento de Cámara (goTo)
+    // Mandamos la vista a re-centrarse donde hicimos click. (devuelve la promesa)
+    const resultadoMovimiento = vistaMapa.goTo(geometriaPunto)
+    // promesa informa de si se completó con éxito o falló.
+    console.log(resultadoMovimiento)
+
+    // A. El movimiento finaliza con éxito (then)
+    resultadoMovimiento.then(() => {
+      // Una vez terminado el centrado, damos zoom 18
+      vistaMapa.zoom = 18
     })
+
+    // B. El movimiento fracasa (catch)
+    // Ocurre por ejemplo si el usuario hace otro click o arrastra mientras la cámara aún viaja
+    resultadoMovimiento.catch((error) => {
+      console.log(error) // Registramos el porqué del error/interrupción en consola
+    })
+  })
 })
-
-
